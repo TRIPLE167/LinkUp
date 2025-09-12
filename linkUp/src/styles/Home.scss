@@ -1,0 +1,11 @@
+.Home-container {
+  display: flex;
+
+  .panel-list {
+    display: flex;
+    flex: 1;
+  }
+  @media (max-width: 600px) {
+    flex-direction: column-reverse;
+  }
+}

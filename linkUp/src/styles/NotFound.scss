@@ -1,0 +1,15 @@
+.not-found {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+
+  h1 {
+    max-width: 90vw;
+  }
+  p {
+    max-width: 90vw;
+  }
+}

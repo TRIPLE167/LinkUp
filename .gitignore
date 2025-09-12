@@ -1,0 +1,30 @@
+# --------------------
+# Root
+# --------------------
+node_modules/
+.env
+.DS_Store
+Thumbs.db
+.vscode/
+
+# --------------------
+# React / Frontend (client)
+# --------------------
+linkUp/node_modules/
+linkUp/dist/
+linkUp/build/
+linkUp/.env.local
+linkUp/.env.*.local
+
+# --------------------
+# Node.js / Backend (server)
+# --------------------
+backend/node_modules/
+backend/.env
+
+# --------------------
+# Logs
+# --------------------
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*

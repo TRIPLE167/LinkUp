@@ -1,0 +1,84 @@
+.chat-list-item {
+  display: flex;
+  padding-left: 24px;
+  padding-block: 10px;
+  align-items: center;
+  cursor: pointer;
+  &:hover {
+    background-color: #f7f7f7;
+  }
+  &.active {
+    background-color: #efefef;
+  }
+  .avatar-wrapper {
+    position: relative;
+    margin-right: 15px;
+    .online-dot {
+      border: 1.6px solid white;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background-color: #00ff00;
+      position: absolute;
+      bottom: 11%;
+      right: -5%;
+    }
+    .offline-dot {
+      border: 1.6px solid white;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background-color: #a7a6a6;
+      position: absolute;
+      bottom: 11%;
+      right: -5%;
+    }
+    img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+  }
+
+  h4 {
+    color: black;
+    font-size: 15px;
+    font-weight: 500;
+    @media (max-width: 937px) {
+      display: none;
+    }
+    @media (max-width: 500px) {
+      display: block;
+    }
+  }
+  p {
+    color: #737373;
+    font-size: 10px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    @media (max-width: 937px) {
+      display: none;
+    }
+    @media (max-width: 500px) {
+      display: flex;
+    }
+   
+    .unread-messages {
+      color: black;
+      font-weight: 500;
+      font-size: 13px;
+    }
+    .dot {
+      margin-inline: 9px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 1px;
+      height: 1px;
+      font-size: 20px;
+      font-weight: 100;
+      margin-bottom: 9px;
+    }
+  }
+}
