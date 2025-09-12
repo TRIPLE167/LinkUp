@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import "../../styles/Verification.scss";
+import "../../styles/verification.scss";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
