@@ -52,7 +52,7 @@ const UserName = () => {
     try {
       const normalizedUsername = username.trim().toLowerCase();
 
-      const res = await axios.post("${import.meta.env.VITE_API_URL}/username", {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/username`, {
         username: normalizedUsername,
         displayName: username,
         email,

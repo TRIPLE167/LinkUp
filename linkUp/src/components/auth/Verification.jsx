@@ -113,7 +113,7 @@ const Verification = () => {
 
     try {
       const response = await axios.post(
-        "${import.meta.env.VITE_API_URL}/verify",
+        `${import.meta.env.VITE_API_URL}/verify`,
         {
           code,
           email,
@@ -141,7 +141,7 @@ const Verification = () => {
     setIsResending(true);
     try {
       const response = await axios.post(
-        "${import.meta.env.VITE_API_URL}/resend-code",
+        `${import.meta.env.VITE_API_URL}/resend-code`,
         {
           email,
         }

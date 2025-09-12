@@ -59,7 +59,7 @@ const CreateGroup = ({ showGroupChat, setShowGroupChat }) => {
 
     try {
       const res = await axios.post(
-        "${import.meta.env.VITE_API_URL}/chats/group",
+        `${import.meta.env.VITE_API_URL}/chats/group`,
         {
           userIds: members,
         }

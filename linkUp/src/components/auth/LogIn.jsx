@@ -63,7 +63,7 @@ const LogIn = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "${import.meta.env.VITE_API_URL}/login",
+        `${import.meta.env.VITE_API_URL}/login`,
         {
           email: email.trim().toLowerCase(),
           password,
@@ -98,7 +98,7 @@ const LogIn = () => {
     setVerifying(true);
     try {
       const response = await axios.post(
-        "${import.meta.env.VITE_API_URL}/login-verify",
+        `${import.meta.env.VITE_API_URL}/login-verify`,
         {
           email: email.trim().toLowerCase(),
         }

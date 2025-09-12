@@ -32,7 +32,7 @@ const ForgotPassword = () => {
 
     try {
       const response = await axios.post(
-        "${import.meta.env.VITE_API_URL}/forgot-password",
+        `${import.meta.env.VITE_API_URL}/forgot-password`,
         {
           email: emailLower,
         }

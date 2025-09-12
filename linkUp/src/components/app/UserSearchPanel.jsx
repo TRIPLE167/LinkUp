@@ -25,7 +25,7 @@ const UserSearchPanel = ({ isOpen, setIsOpen, currentUserId }) => {
   const fetchUsers = async (term, skip = 0) => {
     try {
       const res = await axios.get(
-        "${import.meta.env.VITE_API_URL}/users/search",
+        `${import.meta.env.VITE_API_URL}/users/search`,
         {
           params: { query: term, userId: currentUserId, skip, limit: LIMIT },
         }
@@ -41,7 +41,7 @@ const UserSearchPanel = ({ isOpen, setIsOpen, currentUserId }) => {
 
           try {
             const statusRes = await axios.get(
-              "${import.meta.env.VITE_API_URL}/users/follow-status",
+              `${import.meta.env.VITE_API_URL}/users/follow-status`,
               { params: { followerId: currentUserId, followingId: user._id } }
             );
             return { ...user, mutual: statusRes.data.mutual };

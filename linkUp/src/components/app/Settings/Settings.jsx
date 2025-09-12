@@ -64,7 +64,7 @@ const Settings = () => {
     if (!validateUsername()) return;
 
     try {
-      const res = await axios.post("${import.meta.env.VITE_API_URL}/username", {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/username`, {
         username: userName.trim().toLowerCase(),
         displayName: userName,
         email: currentUser.email,
@@ -145,7 +145,7 @@ const Settings = () => {
       formData.append("userId", currentUser._id);
 
       const res = await axios.post(
-        "${import.meta.env.VITE_API_URL}/avatars/update",
+        `${import.meta.env.VITE_API_URL}/avatars/update`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

@@ -38,7 +38,7 @@ const UserInfo = ({
       try {
         if (info === "followers") {
           const res = await axios.get(
-            "${import.meta.env.VITE_API_URL}/users/followers",
+            `${import.meta.env.VITE_API_URL}/users/followers`,
             {
               params: {
                 userId: profileData._id,
@@ -53,7 +53,7 @@ const UserInfo = ({
           setFollowers((prev) => [...prev, ...res.data]);
         } else if (info === "following") {
           const res = await axios.get(
-            "${import.meta.env.VITE_API_URL}/users/following",
+            `${import.meta.env.VITE_API_URL}/users/following`,
             {
               params: {
                 userId: profileData._id,

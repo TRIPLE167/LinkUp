@@ -66,7 +66,7 @@ const AddMember = ({
 
     try {
       const res = await axios.put(
-        "${import.meta.env.VITE_API_URL}/chats/group/addMembers",
+        `${import.meta.env.VITE_API_URL}/chats/group/addMembers`,
         {
           userIds: members,
           groupId,

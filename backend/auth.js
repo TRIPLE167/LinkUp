@@ -16,7 +16,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     methods: ["GET", "POST"],
   },
 });
@@ -30,7 +30,7 @@ const chatRoutes = require("./routes/chats")(io, usersToSockets);
 app.use("/chats", chatRoutes);
 app.use("/chats/:chatId/messages", messageRoutes);
 
-const userRoutes = require("./routes/Users")(io, usersToSockets);  
+const userRoutes = require("./routes/Users")(io, usersToSockets);
 app.use("/users", userRoutes);
 
 const avatarRoutes = require("./routes/avatars");
@@ -44,7 +44,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
- 
 webpush.setVapidDetails(
   `mailto:${process.env.GMAIL_USER}`,
   "BKZr1975wWKBjxgCEuL3yJWnVEjnqUGLko9BiclcBLiK5WG4Wa3R2p9Hq1USu1MYTRLvMR7fTA4vpl7d-_GLgd0",
@@ -55,7 +54,6 @@ app.post("/subscribe", async (req, res) => {
   const { subscription, userId } = req.body;
 
   try {
- 
     const user = await User.findById(userId);
 
     if (!user) {
@@ -86,7 +84,6 @@ app.post("/register", async (req, res) => {
       const now = new Date();
       const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
 
- 
       if (
         !existingUser.lastResendAt ||
         existingUser.lastResendAt < oneHourAgo
@@ -129,7 +126,7 @@ app.post("/register", async (req, res) => {
       Math.floor(100000 + Math.random() * 900000).toString();
     const verificationCode = generateCode();
 
-    const expirationDate = new Date(Date.now() + 60 * 1000); 
+    const expirationDate = new Date(Date.now() + 60 * 1000);
     const newUser = new User({
       name,
       lastName,
@@ -209,11 +206,10 @@ app.post("/resend-code", async (req, res) => {
     const now = new Date();
     const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
 
- 
     if (!user.lastResendAt || user.lastResendAt < oneHourAgo) {
       user.resendCount = 0;
     }
- 
+
     if (user.resendCount >= 3) {
       return res
         .status(429)
@@ -223,7 +219,7 @@ app.post("/resend-code", async (req, res) => {
     const generateCode = () =>
       Math.floor(100000 + Math.random() * 900000).toString();
     const newCode = generateCode();
-    const expirationDate = new Date(Date.now() + 60 * 1000);  
+    const expirationDate = new Date(Date.now() + 60 * 1000);
 
     user.verificationCode = newCode;
     user.verificationCodeExpiresAt = expirationDate;
@@ -289,25 +285,20 @@ app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
- 
     const user = await User.findOne({ email });
 
     if (!user) {
- 
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    
     if (user.password !== password) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
- 
     if (!user.verified) {
       return res.status(403).json({ message: "User email not verified" });
     }
 
- 
     return res.json({
       success: true,
       message: "Login successful",
@@ -334,15 +325,15 @@ app.post("/forgot-password", async (req, res) => {
         .status(200)
         .json({ message: "If this email exists, a reset code has been sent." });
     }
- 
-    const newResetCode = Math.floor(100000 + Math.random() * 900000).toString(); 
-    const expirationTime = new Date(Date.now() + 10 * 60 * 1000);  
+
+    const newResetCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const expirationTime = new Date(Date.now() + 10 * 60 * 1000);
 
     user.resetCode = newResetCode;
     user.resetCodeExpiresAt = expirationTime;
 
     await user.save();
- 
+
     const mailOptions = {
       from: "LinkUp <linkupl675@gmail.com>",
       to: normalizedEmail,
@@ -417,7 +408,6 @@ app.post("/reset-password", async (req, res) => {
   }
 });
 
- 
 app.post("/login-verify", async (req, res) => {
   try {
     const { email } = req.body;
@@ -491,20 +481,16 @@ const cleanUpUnverifiedUsers = async () => {
   }
 };
 
- 
 setInterval(() => {
   cleanUpUnverifiedUsers();
 }, 12 * 60 * 60 * 1000);
 
- 
 io.on("connection", (socket) => {
- 
   socket.on("addUser", (userId) => {
     usersToSockets.set(userId, socket.id);
     socket.userId = userId;
   });
 
- 
   socket.on("joinAllChats", async (chatIds) => {
     const userId = socket.userId;
 
@@ -545,8 +531,7 @@ io.on("connection", (socket) => {
     const { chatId, _id } = data;
     socket.to(chatId).emit("stopTyping", { _id });
   });
- 
- 
+
   socket.on("sendMessage", async (messageData) => {
     try {
       const newMessage = new Message(messageData);
@@ -556,9 +541,8 @@ io.on("connection", (socket) => {
         updatedAt: new Date(),
       });
 
- 
       io.to(messageData.chatId).emit("receiveMessage", newMessage);
- 
+
       const chat = await Chat.findById(messageData.chatId).populate("users");
 
       const offlineUsers = chat.users.filter((user) => {
@@ -580,7 +564,6 @@ io.on("connection", (socket) => {
             },
           });
 
- 
           webpush
             .sendNotification(user.subscription, payload)
 
@@ -602,7 +585,6 @@ io.on("connection", (socket) => {
 
   socket.on("chatOpened", async ({ chatId, userId }) => {
     try {
- 
       const unreadMessages = await Message.find({
         chatId,
         readBy: { $ne: userId },
@@ -610,13 +592,11 @@ io.on("connection", (socket) => {
       }).sort({ createdAt: 1 });
 
       if (unreadMessages.length > 0) {
- 
         await Message.updateMany(
           { _id: { $in: unreadMessages.map((msg) => msg._id) } },
           { $addToSet: { readBy: userId } }
         );
 
-     
         io.to(chatId).emit("messages:updated", {
           chatId,
           userId,
@@ -626,29 +606,26 @@ io.on("connection", (socket) => {
       console.error("Error handling chatOpened event:", error);
     }
   });
- 
 
   socket.on("messageSeen", async (data) => {
     const { messageId, userId } = data;
 
     try {
- 
       const updatedMessage = await Message.findOneAndUpdate(
         {
           _id: messageId,
-          sender: { $ne: userId }, 
+          sender: { $ne: userId },
         },
         {
-          $addToSet: { readBy: userId },  
+          $addToSet: { readBy: userId },
         },
         { new: true }
       );
 
       if (!updatedMessage) {
- 
         return;
       }
- 
+
       io.to(updatedMessage.chatId.toString()).emit("message:seen", {
         messageId: updatedMessage._id,
         readBy: updatedMessage.readBy,
@@ -657,7 +634,7 @@ io.on("connection", (socket) => {
       console.error("Error handling messageSeen event:", error);
     }
   });
- 
+
   socket.on("disconnecting", () => {
     const disconnectedUserId = socket.userId;
     if (!disconnectedUserId) return;
@@ -669,7 +646,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
- 
     for (let [key, value] of usersToSockets.entries()) {
       if (value === socket.id) {
         usersToSockets.delete(key);
