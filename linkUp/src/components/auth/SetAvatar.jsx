@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../../styles/setAvatar.scss";
+import "../../styles/SetAvatar.scss";
 import AvatarCrop from "../app/AvatarCrop/AvatarCrop";
 import { getCroppedImg } from "../app/AvatarCrop/getCroppedImg";
 
