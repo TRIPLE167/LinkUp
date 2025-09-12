@@ -32,7 +32,7 @@ const ForgotPassword = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/forgot-password",
+        "${import.meta.env.VITE_API_URL}/forgot-password",
         {
           email: emailLower,
         }
@@ -58,7 +58,6 @@ const ForgotPassword = () => {
       <p>Enter your email address and we’ll send you a reset code.</p>
 
       <div>
- 
         <input
           type="email"
           placeholder="Email Address"

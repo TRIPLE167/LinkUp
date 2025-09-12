@@ -49,7 +49,7 @@ export default function Sidebar() {
       const markAllRead = async () => {
         try {
           await axios.post(
-            `http://localhost:3000/users/notifications/mark-read-all`,
+            `${import.meta.env.VITE_API_URL}/users/notifications/mark-read-all`,
             null,
             { params: { userId: currentUser._id } }
           );

@@ -25,7 +25,9 @@ const GroupDetails = ({ groupInfo, isSmallScreen, setGroupDetails }) => {
     const fetchMembers = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/chats/group/members?GroupId=${groupInfo._id}`
+          `${import.meta.env.VITE_API_URL}/chats/group/members?GroupId=${
+            groupInfo._id
+          }`
         );
 
         setMembers(response.data.users);
@@ -45,7 +47,9 @@ const GroupDetails = ({ groupInfo, isSmallScreen, setGroupDetails }) => {
     try {
       let normalizedName = groupNameInput.trim();
       const response = await axios.put(
-        `http://localhost:3000/chats/group/ChangeName?GroupId=${groupInfo._id}`,
+        `${import.meta.env.VITE_API_URL}/chats/group/ChangeName?GroupId=${
+          groupInfo._id
+        }`,
         { groupName: normalizedName, currentUseId: currentUserId }
       );
 
@@ -61,7 +65,9 @@ const GroupDetails = ({ groupInfo, isSmallScreen, setGroupDetails }) => {
   const leaveGroup = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:3000/chats/group/Leave?GroupId=${groupInfo._id}`,
+        `${import.meta.env.VITE_API_URL}/chats/group/Leave?GroupId=${
+          groupInfo._id
+        }`,
         { currentUserId }
       );
       if (response.status === 200) {

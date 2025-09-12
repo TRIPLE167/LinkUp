@@ -52,12 +52,15 @@ const Register = () => {
       try {
         setLoading(true);
 
-        const response = await axios.post("http://localhost:3000/register", {
-          name,
-          lastName,
-          email: normalizedEmail,
-          password,
-        });
+        const response = await axios.post(
+          "${import.meta.env.VITE_API_URL}/register",
+          {
+            name,
+            lastName,
+            email: normalizedEmail,
+            password,
+          }
+        );
 
         localStorage.setItem("email", email);
         localStorage.setItem("expirationDate", response.data.expirationDate);
@@ -92,7 +95,6 @@ const Register = () => {
     }
   };
 
- 
   const handleInputChange = (field, setter) => (e) => {
     setter(e.target.value);
     setErrors((prev) => {
@@ -183,7 +185,6 @@ const Register = () => {
 
             <div>
               <div>
-       
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

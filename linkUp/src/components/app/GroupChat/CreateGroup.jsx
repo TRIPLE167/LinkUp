@@ -10,12 +10,14 @@ const CreateGroup = ({ showGroupChat, setShowGroupChat }) => {
   const [members, setMembers] = useState([currentUserId]);
 
   useEffect(() => {
-    if (!showGroupChat) return;  
+    if (!showGroupChat) return;
 
     const fetchMutuals = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:3000/users/mutuals?userId=${currentUserId}`
+          `${
+            import.meta.env.VITE_API_URL
+          }/users/mutuals?userId=${currentUserId}`
         );
         setMutualUsers(res.data);
       } catch (err) {
@@ -42,7 +44,6 @@ const CreateGroup = ({ showGroupChat, setShowGroupChat }) => {
     return fullText.includes(search);
   });
 
- 
   const handleMemberToggle = (userId) => {
     setMembers((prev) => {
       if (prev.includes(userId)) {
@@ -53,14 +54,16 @@ const CreateGroup = ({ showGroupChat, setShowGroupChat }) => {
     });
   };
 
- 
   const handleCreateGroup = async () => {
     if (members.length < 2) return;
 
     try {
-      const res = await axios.post("http://localhost:3000/chats/group", {
-        userIds: members,
-      });
+      const res = await axios.post(
+        "${import.meta.env.VITE_API_URL}/chats/group",
+        {
+          userIds: members,
+        }
+      );
       setErrorMessage("");
       setMembers([currentUserId]);
       setShowGroupChat(false);

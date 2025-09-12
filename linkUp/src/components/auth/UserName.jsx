@@ -12,7 +12,6 @@ const UserName = () => {
   function validateUsername() {
     const trimmed = username.trim();
 
- 
     if (trimmed.length < 4) {
       setServerResponse("Username must be between 4 and 20 characters");
       return false;
@@ -22,7 +21,6 @@ const UserName = () => {
       return false;
     }
 
- 
     const usernameRegex =
       /^(?!.*[_.-]{2})[a-zA-Z0-9](?:[a-zA-Z0-9._-]{2,18})[a-zA-Z0-9]$/;
 
@@ -40,8 +38,7 @@ const UserName = () => {
       return false;
     }
 
- 
-    setServerResponse("");  
+    setServerResponse("");
     return true;
   }
 
@@ -49,14 +46,13 @@ const UserName = () => {
     event.preventDefault();
 
     if (!validateUsername()) {
-  
       return;
     }
 
     try {
       const normalizedUsername = username.trim().toLowerCase();
 
-      const res = await axios.post("http://localhost:3000/username", {
+      const res = await axios.post("${import.meta.env.VITE_API_URL}/username", {
         username: normalizedUsername,
         displayName: username,
         email,

@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 
- 
-
 const Verification = () => {
   const navigate = useNavigate();
   const inputsRef = useRef([]);
@@ -114,10 +112,13 @@ const Verification = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:3000/verify", {
-        code,
-        email,
-      });
+      const response = await axios.post(
+        "${import.meta.env.VITE_API_URL}/verify",
+        {
+          code,
+          email,
+        }
+      );
       localStorage.setItem("currentUserId", response.data.userId);
       localStorage.removeItem("expirationDate");
       navigate("/setup-username", { replace: true });
@@ -139,9 +140,12 @@ const Verification = () => {
   const resendVerificationCode = async () => {
     setIsResending(true);
     try {
-      const response = await axios.post("http://localhost:3000/resend-code", {
-        email,
-      });
+      const response = await axios.post(
+        "${import.meta.env.VITE_API_URL}/resend-code",
+        {
+          email,
+        }
+      );
 
       if (response.data.expirationDate) {
         localStorage.setItem("expirationDate", response.data.expirationDate);

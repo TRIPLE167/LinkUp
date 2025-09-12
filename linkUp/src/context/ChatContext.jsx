@@ -24,7 +24,6 @@ function urlBase64ToUint8Array(base64String) {
   return outputArray;
 }
 
- 
 const VAPID_PUBLIC_KEY =
   "BKZr1975wWKBjxgCEuL3yJWnVEjnqUGLko9BiclcBLiK5WG4Wa3R2p9Hq1USu1MYTRLvMR7fTA4vpl7d-_GLgd0";
 
@@ -59,13 +58,16 @@ export function ChatProvider({ children }) {
   useEffect(() => {
     chatsRef.current = chats;
   }, [chats]);
- 
+
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/users/my-info", {
-          params: { userId: currentUserId },
-        });
+        const res = await axios.get(
+          "${import.meta.env.VITE_API_URL}/users/my-info",
+          {
+            params: { userId: currentUserId },
+          }
+        );
         setCurrentUser(res.data.user);
         setNotifications(res.data.notifications);
       } catch (err) {
@@ -91,7 +93,6 @@ export function ChatProvider({ children }) {
   useEffect(() => {
     if (!currentUserId) return;
 
-    
     if ("serviceWorker" in navigator && "PushManager" in window) {
       const subscribeUser = async () => {
         try {
@@ -105,8 +106,7 @@ export function ChatProvider({ children }) {
               await registration.pushManager.getSubscription();
 
             if (existingSubscription) {
- 
-              await axios.post("http://localhost:3000/subscribe", {
+              await axios.post("${import.meta.env.VITE_API_URL}/subscribe", {
                 subscription: existingSubscription,
                 userId: currentUserId,
               });
@@ -118,8 +118,7 @@ export function ChatProvider({ children }) {
               applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
             });
 
-  
-            await axios.post("http://localhost:3000/subscribe", {
+            await axios.post("${import.meta.env.VITE_API_URL}/subscribe", {
               subscription: newSubscription,
               userId: currentUserId,
             });
@@ -137,10 +136,9 @@ export function ChatProvider({ children }) {
     if (!socket) return;
 
     socket.on("groupNameUpdated", (data) => {
-      const { groupId, groupName, userName } = data;  
+      const { groupId, groupName, userName } = data;
 
       setChats((prevChats) => {
- 
         const updatedChats = prevChats.map((chat) => {
           if (chat._id === groupId) {
             return {
@@ -152,14 +150,13 @@ export function ChatProvider({ children }) {
               },
             };
           }
- 
+
           return chat;
         });
 
         return updatedChats;
       });
 
- 
       if (selectedChat && selectedChat._id === groupId) {
         setSelectedChat((prevSelected) => ({
           ...prevSelected,
@@ -171,32 +168,30 @@ export function ChatProvider({ children }) {
         }));
       }
     });
- 
+
     return () => {
       socket.off("groupNameUpdated");
     };
-  }, [socket, selectedChat]); 
- 
+  }, [socket, selectedChat]);
+
   useEffect(() => {
     if (!currentUserId) return;
 
-    const newSocket = io("http://localhost:3000");
+    const newSocket = io("${import.meta.env.VITE_API_URL}");
     setSocket(newSocket);
 
     newSocket.on("connect", () => {
       newSocket.emit("addUser", currentUserId);
       const fetchChatsAndJoin = async () => {
         try {
-          const res = await axios.get("http://localhost:3000/chats", {
+          const res = await axios.get("${import.meta.env.VITE_API_URL}/chats", {
             params: { userId: currentUserId },
           });
 
           const { chats: allChats, unreadCounts } = res.data;
 
- 
           setChats(allChats);
 
- 
           const countMap = {};
           allChats.forEach((chat) => {
             const unread = unreadCounts.find((uc) => uc._id === chat._id);
@@ -204,7 +199,6 @@ export function ChatProvider({ children }) {
           });
           setNewMessagesCount(countMap);
 
- 
           const allChatIds = allChats.map((chat) => chat._id);
           newSocket.emit("joinAllChats", allChatIds);
         } catch (err) {
@@ -298,7 +292,7 @@ export function ChatProvider({ children }) {
           }));
 
           const res = await axios.get(
-            `http://localhost:3000/chats/${newMessage.chatId}`
+            `${import.meta.env.VITE_API_URL}/chats/${newMessage.chatId}`
           );
           setChats((prev) => [res.data, ...prev]);
         } catch (err) {
@@ -329,13 +323,11 @@ export function ChatProvider({ children }) {
     };
   }, [currentUserId]);
 
- 
   useEffect(() => {
     if (!socket) return;
 
     const handleNotification = (newNotification) => {
       setNotifications((prev) => {
- 
         const filtered = prev.filter(
           (n) =>
             !(
@@ -344,7 +336,6 @@ export function ChatProvider({ children }) {
             )
         );
 
- 
         return [newNotification, ...filtered];
       });
     };
@@ -356,7 +347,6 @@ export function ChatProvider({ children }) {
     };
   }, [socket]);
 
- 
   useEffect(() => {
     if (!socket) return;
 
@@ -435,11 +425,10 @@ export function ChatProvider({ children }) {
       socket.off("userOffline");
     };
   }, [socket, currentUserId]);
- 
+
   useEffect(() => {
     if (!socket) return;
 
- 
     socket.on("message:seen", ({ messageId, readBy }) => {
       setMessages((prevMessages) => {
         let found = false;
@@ -463,12 +452,8 @@ export function ChatProvider({ children }) {
       });
     });
 
- 
     socket.on("messages:updated", ({ chatId, userId }) => {
- 
-
       setMessages((prevMessages) => {
- 
         const updated = prevMessages.map((msg) =>
           msg.chatId === chatId &&
           msg.sender !== userId &&
@@ -504,13 +489,14 @@ export function ChatProvider({ children }) {
 
     const oldest = messages[0].createdAt;
     const res = await axios.get(
-      `http://localhost:3000/chats/${selectedChat._id}/messages?limit=15&before=${oldest}`
+      `${import.meta.env.VITE_API_URL}/chats/${
+        selectedChat._id
+      }/messages?limit=15&before=${oldest}`
     );
 
     setMessages((prev) => [...res.data.reverse(), ...prev]);
   };
 
- 
   const onSelectChat = async (chat) => {
     setSelectedChat(chat);
 
@@ -528,7 +514,7 @@ export function ChatProvider({ children }) {
       let canSend = false;
       if (otherUserId) {
         const followRes = await axios.get(
-          `http://localhost:3000/Users/follow-status`,
+          `${import.meta.env.VITE_API_URL}/Users/follow-status`,
           { params: { followerId: currentUserId, followingId: otherUserId } }
         );
 
@@ -537,17 +523,14 @@ export function ChatProvider({ children }) {
         if (isFollowedBy && isFollowing) {
           canSend = true;
         } else if (!isFollowedBy && !isFollowing) {
- 
           canSend = false;
           placeholder = `You must follow each other to chat`;
         } else if (!isFollowedBy) {
-   
           canSend = false;
           placeholder = `${
             chat.users.find((u) => u._id === otherUserId)?.userName
           } unfollowed you`;
         } else if (!isFollowing) {
- 
           canSend = false;
           placeholder = `You must follow ${
             chat.users.find((u) => u._id === otherUserId)?.userName
@@ -559,7 +542,7 @@ export function ChatProvider({ children }) {
       setTextAreaPlaceHolder(placeholder);
 
       const res = await axios.get(
-        `http://localhost:3000/chats/${chat._id}/messages?limit=15`
+        `${import.meta.env.VITE_API_URL}/chats/${chat._id}/messages?limit=15`
       );
       setMessages(res.data.reverse());
 
@@ -580,7 +563,6 @@ export function ChatProvider({ children }) {
   };
 
   const value = {
- 
     socket,
     selectedChat,
     chats,
@@ -593,12 +575,12 @@ export function ChatProvider({ children }) {
     canSendMessage,
     textAreaPlaceHolder,
     followEvents,
- 
+
     setMessages,
     setCurrentUser,
     setNotifications,
     setChats,
- 
+
     setSelectedChat,
     onSelectChat,
     joinChatRoom,

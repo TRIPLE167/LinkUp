@@ -21,12 +21,15 @@ const UserSearchPanel = ({ isOpen, setIsOpen, currentUserId }) => {
       setAreMoreUsers(true);
     }
   }, [isOpen]);
- 
+
   const fetchUsers = async (term, skip = 0) => {
     try {
-      const res = await axios.get("http://localhost:3000/users/search", {
-        params: { query: term, userId: currentUserId, skip, limit: LIMIT },
-      });
+      const res = await axios.get(
+        "${import.meta.env.VITE_API_URL}/users/search",
+        {
+          params: { query: term, userId: currentUserId, skip, limit: LIMIT },
+        }
+      );
 
       if (res.data.length < LIMIT) {
         setAreMoreUsers(false);
@@ -38,7 +41,7 @@ const UserSearchPanel = ({ isOpen, setIsOpen, currentUserId }) => {
 
           try {
             const statusRes = await axios.get(
-              "http://localhost:3000/users/follow-status",
+              "${import.meta.env.VITE_API_URL}/users/follow-status",
               { params: { followerId: currentUserId, followingId: user._id } }
             );
             return { ...user, mutual: statusRes.data.mutual };
@@ -55,7 +58,6 @@ const UserSearchPanel = ({ isOpen, setIsOpen, currentUserId }) => {
     }
   };
 
- 
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
@@ -68,7 +70,6 @@ const UserSearchPanel = ({ isOpen, setIsOpen, currentUserId }) => {
     }
   };
 
- 
   useEffect(() => {
     if (searchTerm.trim() !== "" && Skip > 0) {
       fetchUsers(searchTerm, Skip);

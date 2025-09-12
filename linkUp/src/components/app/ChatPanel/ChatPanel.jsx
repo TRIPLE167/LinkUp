@@ -33,7 +33,6 @@ export default function ChatPanel({}) {
   const pathSegments = location.pathname.split("/");
   const chatIdFromUrl = pathSegments[pathSegments.length - 1];
 
- 
   useEffect(() => {
     setLocalChat(chat);
     setLocalMessages(messages);
@@ -49,14 +48,13 @@ export default function ChatPanel({}) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
- 
   useEffect(() => {
     if (!chat && chatIdFromUrl && chatIdFromUrl !== "home") {
       setIsLoading(true);
       const fetchChat = async () => {
         try {
           const res = await axios.get(
-            `http://localhost:3000/chats/${chatIdFromUrl}`
+            `${import.meta.env.VITE_API_URL}/chats/${chatIdFromUrl}`
           );
           onSelectChat(res.data);
         } catch (err) {
@@ -71,7 +69,6 @@ export default function ChatPanel({}) {
     }
   }, [chat, chatIdFromUrl]);
 
- 
   useEffect(() => {
     if (!localChat) return;
 
@@ -87,7 +84,6 @@ export default function ChatPanel({}) {
     }
   }, [localChat, currentUserId]);
 
- 
   useEffect(() => {
     if (!socket || !localChat) return;
 
@@ -112,7 +108,6 @@ export default function ChatPanel({}) {
     };
   }, [socket, localChat]);
 
- 
   if (isLoading) {
     return (
       <div className="chat-panel loading">
@@ -137,7 +132,6 @@ export default function ChatPanel({}) {
     );
   }
 
- 
   const handleSendMessage = (messageText) => {
     if (messageText.trim()) {
       const newMessage = {

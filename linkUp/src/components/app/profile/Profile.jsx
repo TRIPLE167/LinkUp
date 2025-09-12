@@ -45,13 +45,13 @@ export default function Profile() {
 
   const handleFollow = async (followingId) => {
     try {
-      await axios.post("http://localhost:3000/users/follow", {
+      await axios.post("${import.meta.env.VITE_API_URL}/users/follow", {
         followerId: currentUser._id,
         followingId,
       });
 
       setUserInfoUpdate(null);
- 
+
       if (followingId === profileData._id) {
         setProfileData((prev) => ({
           ...prev,
@@ -59,7 +59,7 @@ export default function Profile() {
         }));
 
         const statusRes = await axios.get(
-          "http://localhost:3000/users/follow-status",
+          "${import.meta.env.VITE_API_URL}/users/follow-status",
           {
             params: {
               followerId: currentUser._id,
@@ -82,10 +82,13 @@ export default function Profile() {
 
   const handleMessage = async () => {
     try {
-      const res = await axios.post("http://localhost:3000/chats/start", {
-        currentUserId: currentUser._id,
-        userId: profileData._id,
-      });
+      const res = await axios.post(
+        "${import.meta.env.VITE_API_URL}/chats/start",
+        {
+          currentUserId: currentUser._id,
+          userId: profileData._id,
+        }
+      );
       const chat = res.data;
       navigate("/home", { state: { openChat: chat } });
     } catch (e) {
@@ -95,21 +98,19 @@ export default function Profile() {
 
   const handleUnfollow = async (followingId) => {
     try {
-      await axios.post("http://localhost:3000/users/unfollow", {
+      await axios.post("${import.meta.env.VITE_API_URL}/users/unfollow", {
         followerId: currentUser._id,
         followingId,
       });
 
- 
       if (followingId === profileData._id) {
         setProfileData((prev) => ({
           ...prev,
           followersCount: Math.max((prev?.followersCount || 1) - 1, 0),
         }));
 
-   
         const statusRes = await axios.get(
-          "http://localhost:3000/users/follow-status",
+          "${import.meta.env.VITE_API_URL}/users/follow-status",
           {
             params: {
               followerId: currentUser._id,
@@ -137,16 +138,20 @@ export default function Profile() {
       try {
         let res;
         if (normalizedUserName === currentUser.userName.toLowerCase()) {
- 
-          res = await axios.get("http://localhost:3000/users/my-info", {
-            params: { userId: currentUser._id },
-          });
+          res = await axios.get(
+            "${import.meta.env.VITE_API_URL}/users/my-info",
+            {
+              params: { userId: currentUser._id },
+            }
+          );
           setProfileData(res.data.user);
         } else {
- 
-          res = await axios.get("http://localhost:3000/users/search", {
-            params: { query: userName, userId: currentUser._id },
-          });
+          res = await axios.get(
+            "${import.meta.env.VITE_API_URL}/users/search",
+            {
+              params: { query: userName, userId: currentUser._id },
+            }
+          );
           const exactMatch = (res.data || []).find(
             (u) => String(u.userName).toLowerCase() === normalizedUserName
           );
@@ -163,14 +168,13 @@ export default function Profile() {
     if (currentUser?._id) fetchProfile();
   }, [normalizedUserName, currentUser]);
 
- 
   useEffect(() => {
     const fetchFollowStatus = async () => {
       if (!profileData?._id || !currentUser._id) return;
-      if (String(currentUser._id) === String(profileData._id)) return;  
+      if (String(currentUser._id) === String(profileData._id)) return;
       try {
         const res = await axios.get(
-          "http://localhost:3000/users/follow-status",
+          "${import.meta.env.VITE_API_URL}/users/follow-status",
           {
             params: {
               followerId: currentUser._id,

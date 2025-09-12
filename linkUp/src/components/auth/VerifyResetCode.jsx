@@ -26,11 +26,16 @@ const VerifyResetCode = () => {
 
   const handlePaste = (e) => {
     e.preventDefault();
-    const paste = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    const paste = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 6);
     for (let i = 0; i < paste.length; i++) {
       inputsRef.current[i].value = paste[i];
     }
-    const firstEmptyIndex = inputsRef.current.findIndex((input) => !input.value);
+    const firstEmptyIndex = inputsRef.current.findIndex(
+      (input) => !input.value
+    );
     if (firstEmptyIndex !== -1) {
       inputsRef.current[firstEmptyIndex].focus();
     } else {
@@ -48,7 +53,9 @@ const VerifyResetCode = () => {
 
   const handleFocus = (i) => {
     if (inputsRef.current[i].value) return;
-    const firstEmptyIndex = inputsRef.current.findIndex((input) => !input.value);
+    const firstEmptyIndex = inputsRef.current.findIndex(
+      (input) => !input.value
+    );
     if (firstEmptyIndex !== -1) {
       inputsRef.current[firstEmptyIndex].focus();
     }
@@ -72,12 +79,14 @@ const VerifyResetCode = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:3000/verify-reset-code", {
-        code,
-        email,
-      });
+      const response = await axios.post(
+        "${import.meta.env.VITE_API_URL}/verify-reset-code",
+        {
+          code,
+          email,
+        }
+      );
 
- 
       navigate("/reset-password", { replace: true });
     } catch (error) {
       if (
@@ -102,7 +111,11 @@ const VerifyResetCode = () => {
         <h1>
           If this email exists, a reset code has been sent to:
           <br />
-          <a href="https://mail.google.com" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://mail.google.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {email || "your email"}
           </a>
         </h1>

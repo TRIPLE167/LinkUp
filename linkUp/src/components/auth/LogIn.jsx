@@ -62,10 +62,13 @@ const LogIn = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:3000/login", {
-        email: email.trim().toLowerCase(),
-        password,
-      });
+      const response = await axios.post(
+        "${import.meta.env.VITE_API_URL}/login",
+        {
+          email: email.trim().toLowerCase(),
+          password,
+        }
+      );
 
       if (response.data.success) {
         localStorage.setItem("email", email.trim().toLocaleLowerCase());
@@ -94,9 +97,12 @@ const LogIn = () => {
   const handleVerifyRedirect = async () => {
     setVerifying(true);
     try {
-      const response = await axios.post("http://localhost:3000/login-verify", {
-        email: email.trim().toLowerCase(),
-      });
+      const response = await axios.post(
+        "${import.meta.env.VITE_API_URL}/login-verify",
+        {
+          email: email.trim().toLowerCase(),
+        }
+      );
 
       if (response.status === 200) {
         localStorage.setItem("email", email.trim().toLowerCase());
@@ -125,7 +131,6 @@ const LogIn = () => {
     }
   };
 
- 
   const handleInputChange = (field, setter) => (e) => {
     setter(e.target.value);
     setErrors((prev) => {

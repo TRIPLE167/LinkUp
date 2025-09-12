@@ -37,26 +37,32 @@ const UserInfo = ({
       setIsLoading(true);
       try {
         if (info === "followers") {
-          const res = await axios.get("http://localhost:3000/users/followers", {
-            params: {
-              userId: profileData._id,
-              currentUserId,
-              skip: followersSkip,
-              limit: LIMIT,
-            },
-          });
+          const res = await axios.get(
+            "${import.meta.env.VITE_API_URL}/users/followers",
+            {
+              params: {
+                userId: profileData._id,
+                currentUserId,
+                skip: followersSkip,
+                limit: LIMIT,
+              },
+            }
+          );
 
           if (res.data.length < LIMIT) setHasMoreFollowers(false);
           setFollowers((prev) => [...prev, ...res.data]);
         } else if (info === "following") {
-          const res = await axios.get("http://localhost:3000/users/following", {
-            params: {
-              userId: profileData._id,
-              currentUserId,
-              skip: followingSkip,
-              limit: LIMIT,
-            },
-          });
+          const res = await axios.get(
+            "${import.meta.env.VITE_API_URL}/users/following",
+            {
+              params: {
+                userId: profileData._id,
+                currentUserId,
+                skip: followingSkip,
+                limit: LIMIT,
+              },
+            }
+          );
 
           if (res.data.length < LIMIT) setHasMoreFollowing(false);
           setFollowing((prev) => [...prev, ...res.data]);
@@ -86,12 +92,9 @@ const UserInfo = ({
     );
   }, [userInfoUpdate]);
 
- 
   const handleFollowAndStateUpdate = async (userId) => {
- 
     await handleFollow(userId);
 
- 
     setFollowers((prevFollowers) =>
       prevFollowers.map((f) =>
         f._id === userId ? { ...f, isFollowing: true } : f
@@ -103,7 +106,6 @@ const UserInfo = ({
       )
     );
   };
- 
 
   useEffect(() => {
     if (info === "followers") {
@@ -130,7 +132,6 @@ const UserInfo = ({
     setUserToBeUnfollowed(user);
   };
 
- 
   let connectionText = "";
   if (followStatus.mutual) {
     connectionText = "Mutuals";
@@ -146,7 +147,6 @@ const UserInfo = ({
     ? format(new Date(profileData.createdAt), "MMMM d, yyyy")
     : "Unknown";
 
- 
   const renderContent = () => {
     switch (info) {
       case "followers":

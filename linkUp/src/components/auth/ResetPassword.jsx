@@ -30,7 +30,6 @@ const ResetPassword = () => {
 
     setFieldErrors(errors);
 
- 
     return Object.keys(errors).length === 0;
   };
 
@@ -43,8 +42,6 @@ const ResetPassword = () => {
     setLoading(true);
 
     try {
- 
-
       const email = localStorage.getItem("email");
       if (!email) {
         setServerMessage(
@@ -54,7 +51,7 @@ const ResetPassword = () => {
         return;
       }
 
-      await axios.post("http://localhost:3000/reset-password", {
+      await axios.post("${import.meta.env.VITE_API_URL}/reset-password", {
         email,
         newPassword,
       });
@@ -73,7 +70,11 @@ const ResetPassword = () => {
   };
 
   return (
-    <form className="Reset-password-container" onSubmit={handleSubmit} noValidate>
+    <form
+      className="Reset-password-container"
+      onSubmit={handleSubmit}
+      noValidate
+    >
       <h2>Reset Your Password</h2>
       <p>Choose your new password.</p>
       <div>
@@ -102,7 +103,6 @@ const ResetPassword = () => {
           type={showConfirmPassword ? "text" : "password"}
           placeholder="Confirm New Password"
           value={confirmPassword}
- 
           onChange={(e) => {
             setConfirmPassword(e.target.value);
             setFieldErrors((fe) => ({ ...fe, confirmPassword: "" }));

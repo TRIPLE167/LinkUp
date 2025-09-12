@@ -17,12 +17,14 @@ const AddMember = ({
   const [members, setMembers] = useState([]);
 
   useEffect(() => {
-    if (!showAddMember) return;  
+    if (!showAddMember) return;
 
     const fetchMutuals = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:3000/users/mutuals?userId=${currentUserId}`
+          `${
+            import.meta.env.VITE_API_URL
+          }/users/mutuals?userId=${currentUserId}`
         );
         setMutualUsers(res.data);
       } catch (err) {
@@ -49,7 +51,6 @@ const AddMember = ({
     return fullText.includes(search);
   });
 
- 
   const handleMemberToggle = (userId) => {
     setMembers((prev) => {
       if (prev.includes(userId)) {
@@ -60,13 +61,12 @@ const AddMember = ({
     });
   };
 
- 
   const handleAddMembers = async () => {
     if (members.length === 0) return;
 
     try {
       const res = await axios.put(
-        "http://localhost:3000/chats/group/addMembers",
+        "${import.meta.env.VITE_API_URL}/chats/group/addMembers",
         {
           userIds: members,
           groupId,

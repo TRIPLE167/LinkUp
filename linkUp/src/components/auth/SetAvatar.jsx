@@ -17,7 +17,6 @@ function fileToDataUrl(file) {
 const SetAvatar = () => {
   const navigate = useNavigate();
 
- 
   const [avatarPreview, setAvatarPreview] = useState("");
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [displaySize, setDisplaySize] = useState({ width: 200, height: 200 });
@@ -25,7 +24,7 @@ const SetAvatar = () => {
   const [croppedAvatarPreview, setCroppedAvatarPreview] = useState("");
   const [croppedBlob, setCroppedBlob] = useState(null);
   const [CROP_SIZE, setCROP_SIZE] = useState(250);
- 
+
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef(null);
@@ -105,7 +104,7 @@ const SetAvatar = () => {
       formData.append("userId", userId);
 
       const res = await axios.post(
-        "http://localhost:3000/avatars/upload",
+        "${import.meta.env.VITE_API_URL}/avatars/upload",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
