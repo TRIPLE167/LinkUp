@@ -64,7 +64,7 @@
             border-radius: 50%;
             background-color: #00ff00;
             position: absolute;
-            bottom: 11%;
+            bottom: 0;
             right: -5%;
           }
           .offline-dot {
@@ -74,7 +74,7 @@
             border-radius: 50%;
             background-color: #a7a6a6;
             position: absolute;
-            bottom: 11%;
+            bottom: 0;
             right: -5%;
           }
         }
@@ -112,12 +112,12 @@
   }
 
   .message-list {
-    flex: 1;
+    flex: 1 1 auto;
     overflow-y: auto;
     padding: 12px;
     display: flex;
     flex-direction: column;
-    
+
     .message {
       margin-top: 10px;
       column-gap: 10px;

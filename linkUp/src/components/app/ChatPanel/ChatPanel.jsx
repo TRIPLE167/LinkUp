@@ -168,10 +168,7 @@ export default function ChatPanel({}) {
   return (
     <div
       className="chat-panel"
-      style={{
-        height:
-          inputFocused && window.innerWidth <= 600 ? window.innerHeight : {},
-      }}
+    
     >
       <div
         className="chat"
