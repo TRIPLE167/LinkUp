@@ -32,12 +32,7 @@
     background-color: white;
     border-bottom: 1px solid #ddd;
 
-    @media (max-width: 500px) {
-      position: fixed;
-      top: 0;
-      z-index: 1;
-      width: 100%;
-    }
+  
     .return {
       svg {
         width: 30px;
@@ -125,10 +120,7 @@
     display: flex;
     flex-direction: column;
 
-
-    @media(max-width: 500px){
-      margin-top: 60px;
-    }
+    
     .message {
       margin-top: 10px;
       column-gap: 10px;

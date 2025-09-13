@@ -9,4 +9,8 @@ html,
 body {
   touch-action: pan-x pan-y;  
 }
- 
+@media (max-width: 500px) {
+  body {
+    overflow: hidden;
+  }
+}

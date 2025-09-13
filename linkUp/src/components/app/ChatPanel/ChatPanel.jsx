@@ -7,6 +7,7 @@ import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import "./ChatPanel.scss";
 import GroupDetails from "../GroupChat/GroupDetails";
+
 export default function ChatPanel({}) {
   const {
     selectedChat: chat,
@@ -32,6 +33,53 @@ export default function ChatPanel({}) {
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const chatIdFromUrl = pathSegments[pathSegments.length - 1];
+
+  const [panelHeight, setPanelHeight] = useState();
+
+  // This is the new useEffect hook you requested to fix the iOS keyboard issue.
+  useEffect(() => {
+    // Check if the browser supports visualViewport, which is key for iOS.
+    if (window.visualViewport) {
+      const handleResize = () => {
+        // If the message input ref exists, get the new viewport height
+        if (inputRef.current) {
+          const newHeight = window.visualViewport.height;
+          // Set the panel's height to the new, smaller viewport height.
+          setPanelHeight(`${newHeight}px`);
+        }
+      };
+
+      const handleFocus = () => {
+        // Attach the resize listener when the input is focused (keyboard appears).
+        window.visualViewport.addEventListener("resize", handleResize);
+        // Call it immediately to handle the initial state.
+        handleResize();
+      };
+
+      const handleBlur = () => {
+        // Remove the listener when the input is blurred (keyboard disappears).
+        window.visualViewport.removeEventListener("resize", handleResize);
+        // Reset the panel height to its default value.
+        setPanelHeight("100dvh");
+      };
+
+      const inputElement = inputRef.current;
+      if (inputElement) {
+        inputElement.addEventListener("focusin", handleFocus);
+        inputElement.addEventListener("focusout", handleBlur);
+      }
+
+      // Cleanup function to remove event listeners on component unmount.
+      return () => {
+        if (inputElement) {
+          inputElement.removeEventListener("focusin", handleFocus);
+          inputElement.removeEventListener("focusout", handleBlur);
+        }
+        window.visualViewport.removeEventListener("resize", handleResize);
+      };
+    }
+  }, []);
+  
 
   useEffect(() => {
     setLocalChat(chat);
@@ -147,7 +195,12 @@ export default function ChatPanel({}) {
   };
 
   return (
-    <div className="chat-panel">
+    <div
+      className="chat-panel"
+      style={{
+        height: window.innerWidth < 500 ? panelHeight : "",
+      }}
+    >
       <div
         className="chat"
         style={{ opacity: isSmallScreen && groupDetails ? 0 : 1 }}

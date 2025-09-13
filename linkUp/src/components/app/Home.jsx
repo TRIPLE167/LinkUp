@@ -1,4 +1,3 @@
- 
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import HomeSideBar from "./SideBar";
@@ -21,7 +20,6 @@ const Home = () => {
     }
   }, [location.state]);
 
-  
   useEffect(() => {
     const handleResize = () => setIsSmallScreen(window.innerWidth < 501);
     window.addEventListener("resize", handleResize);
