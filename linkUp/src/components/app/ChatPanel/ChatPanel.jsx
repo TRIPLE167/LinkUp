@@ -19,10 +19,8 @@ export default function ChatPanel({}) {
     setMessages,
     setSelectedChat,
   } = useChat();
-
+  const inputRef = useRef();
   const currentUserId = localStorage.getItem("currentUserId");
-  const [inputFocused, setInputFocused] = useState(false);
-  const messageInputRef = useRef();
   const [groupDetails, setGroupDetails] = useState(false);
   const [localChat, setLocalChat] = useState(chat);
   const [localMessages, setLocalMessages] = useState(messages);
@@ -45,28 +43,11 @@ export default function ChatPanel({}) {
   }, [chat]);
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsSmallScreen(window.innerWidth < 970);
-    };
+    const handleResize = () => setIsSmallScreen(window.innerWidth < 970);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    const input = messageInputRef.current;
-    if (!input) return;
-
-    const handleFocus = () => setInputFocused(true);
-    const handleBlur = () => setInputFocused(false);
-
-    input.addEventListener("focus", handleFocus);
-    input.addEventListener("blur", handleBlur);
-
-    return () => {
-      input.removeEventListener("focus", handleFocus);
-      input.removeEventListener("blur", handleBlur);
-    };
-  }, []);
   useEffect(() => {
     if (!chat && chatIdFromUrl && chatIdFromUrl !== "home") {
       setIsLoading(true);
@@ -166,10 +147,7 @@ export default function ChatPanel({}) {
   };
 
   return (
-    <div
-      className="chat-panel"
-    
-    >
+    <div className="chat-panel">
       <div
         className="chat"
         style={{ opacity: isSmallScreen && groupDetails ? 0 : 1 }}
@@ -189,11 +167,11 @@ export default function ChatPanel({}) {
           typingUsers={typingUsers}
         />
         <MessageInput
-          ref={messageInputRef}
           onSend={handleSendMessage}
           socket={socket}
           chat={localChat}
           currentUser={currentUser}
+          inputRef={inputRef}
         />
       </div>
       {groupDetails && (

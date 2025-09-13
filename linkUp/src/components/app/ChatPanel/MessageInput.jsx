@@ -7,7 +7,7 @@ export default function MessageInput({
   socket,
   chat,
   currentUser,
-  ref: inputRef,
+  inputRef,
 }) {
   const [message, setMessage] = useState("");
   const [buttonClass, setButtonClass] = useState("");
