@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../../styles/Register.scss";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Register = () => {
   const navigate = useNavigate();
-
+  const passwordRef = useRef();
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -254,10 +254,22 @@ const Register = () => {
                   placeholder="Password"
                   value={password}
                   onChange={handleInputChange("password", setPassword)}
+                  ref={passwordRef}
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword((prev) => !prev)}
+                  onClick={() => {
+                    setShowPassword((prev) => !prev);
+                    setTimeout(() => {
+                      const input = passwordRef.current;
+                      if (input) {
+                        input.focus();
+
+                        const length = input.value.length;
+                        input.setSelectionRange(length, length);
+                      }
+                    }, 0);
+                  }}
                 >
                   <img src="/images/eye.png" alt="Toggle Password Visibility" />
                 </button>

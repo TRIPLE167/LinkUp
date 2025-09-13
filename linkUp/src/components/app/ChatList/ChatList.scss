@@ -2,7 +2,7 @@
   width: 24%;
   min-width: 350px;
   border-right: 1px solid #ddd;
-  height: 100vh;
+  height: 100dvh;
 
   display: flex;
   flex-direction: column;
@@ -11,7 +11,7 @@
     min-width: 0;
   }
   @media (max-width: 600px) {
-    height: 90vh;
+    height: 90dvh;
   }
   @media (max-width: 500px) {
     width: 100%;
@@ -239,7 +239,7 @@
   left: 0;
   opacity: 40%;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   position: absolute;
   background-color: black;
   z-index: 501;

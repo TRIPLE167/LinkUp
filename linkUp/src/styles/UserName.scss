@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: 100vh;
+  height: 100dvh;
 
   h2 {
     margin-bottom: 10px;
@@ -67,9 +67,13 @@
       padding-left: 58px;
       font-size: 14px;
 
+      @media (max-width: 600px) {
+        font-size: 16px;
+      }
       color: #333333;
       @media (max-width: 600px) {
         width: 400px;
+        font-size: 16px;
       }
       @media (max-width: 450px) {
         width: 340px;

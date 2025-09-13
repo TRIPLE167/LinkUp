@@ -20,7 +20,7 @@
     background-position: center;
     background-repeat: no-repeat;
     width: 55%;
-    height: 100vh;
+    height: 100dvh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -60,7 +60,7 @@
   .login-form {
     display: flex;
     width: 45%;
-    min-height: 100vh;
+    min-height: 100dvh;
     justify-content: center;
     align-items: center;
     @media (max-width: 750px) {
@@ -149,6 +149,9 @@
           font-size: 14px;
           color: #333333;
 
+          @media (max-width: 600px) {
+            font-size: 16px;
+          }
           &:focus {
             border-color: #007bff;
           }

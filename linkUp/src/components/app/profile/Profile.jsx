@@ -17,6 +17,7 @@ export default function Profile() {
   const [userToBeUnfollowed, setUserToBeUnfollowed] = useState(null);
   const [error, setError] = useState("");
   const [currentUserCheck, setcurrentUserCheck] = useState(null);
+  const [isOnline, setIsOnline] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 500);
   const [followStatus, setFollowStatus] = useState({
     following: false,
@@ -137,28 +138,30 @@ export default function Profile() {
       setError("");
       try {
         let res;
+
         if (normalizedUserName === currentUser.userName.toLowerCase()) {
+          // fetch own profile
           res = await axios.get(
             `${import.meta.env.VITE_API_URL}/users/my-info`,
-            {
-              params: { userId: currentUser._id },
-            }
+            { params: { userId: currentUser._id } }
           );
-          setProfileData(res.data.user);
+          setProfileData(res.data.user || null);
+          setUserToBeUnfollowed(res.data.user || null);
         } else {
+          // fetch another user's profile
           res = await axios.get(
-            `${import.meta.env.VITE_API_URL}/users/search`,
-            {
-              params: { query: userName, userId: currentUser._id },
-            }
+            `${import.meta.env.VITE_API_URL}/users/profile-info`,
+            { params: { query: userName, userId: currentUser._id } }
           );
-          const exactMatch = (res.data || []).find(
-            (u) => String(u.userName).toLowerCase() === normalizedUserName
-          );
-          setProfileData(exactMatch || null);
-          setUserToBeUnfollowed(exactMatch || null);
+
+          setProfileData(res.data || null);
+          setUserToBeUnfollowed(res.data || null);
         }
+
+        // set online status from profileData
+        setIsOnline(res.data?.isOnline || false);
       } catch (e) {
+        console.error("Failed to fetch profile:", e);
         setError("Failed to load profile");
       } finally {
         setIsLoading(false);
@@ -259,16 +262,7 @@ export default function Profile() {
               </button>
             )}
           </div>
-          <div
-            className="about-container"
-            style={{
-              minHeight:
-                isSmallScreen &&
-                (activeTab === "followers" || activeTab === "following")
-                  ? "460px"
-                  : "auto",
-            }}
-          >
+          <div className="about-container">
             <div className="buttons">
               <button
                 className={activeTab === "about" ? "focused" : ""}
@@ -299,6 +293,7 @@ export default function Profile() {
               setWantsUnfollow={setWantsUnfollow}
               setUserToBeUnfollowed={setUserToBeUnfollowed}
               userInfoUpdate={userInfoUpdate}
+              isOnline={isOnline}
             />
           </div>
         </div>

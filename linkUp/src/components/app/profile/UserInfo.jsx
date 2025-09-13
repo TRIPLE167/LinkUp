@@ -14,6 +14,7 @@ const UserInfo = ({
   setUserToBeUnfollowed,
   userInfoUpdate,
   setWantsUnfollow,
+  isOnline,
 }) => {
   const isCurrentUser = profileData?._id === currentUserId;
 
@@ -313,7 +314,14 @@ const UserInfo = ({
                   </div>
                   <div>
                     <h6>Status</h6>
-                    <p>online</p>
+                    <p>
+      
+                      {!isCurrentUser
+                        ? isOnline
+                          ? "Online"
+                          : "Offline"
+                        : "Online"}
+                    </p>
                   </div>
                 </div>
               </div>

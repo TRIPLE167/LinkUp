@@ -4,7 +4,7 @@
   @media (max-width: 600px) {
     display: flex;
     width: 100vw;
-    height: 90vh;
+    height: 90dvh;
     left: 0;
     box-shadow: none;
     border-radius: 0;
@@ -18,7 +18,7 @@
   width: 350px;
   left: -350px;
   transition: left 0.8s ease;
-  height: 100vh;
+  height: 100dvh;
   border-bottom-right-radius: 20px;
   border-top-right-radius: 20px;
   z-index: 1;
@@ -83,7 +83,7 @@
   right: 0;
   display: block;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   position: absolute;
   background-color: transparent;
   z-index: 1;

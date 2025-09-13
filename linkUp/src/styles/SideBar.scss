@@ -5,7 +5,7 @@
   position: relative;
   flex-direction: column;
   justify-content: space-between;
-  height: 100vh;
+  height: 100dvh;
   width: 6vw;
   min-width: 92px;
   z-index: 500;
@@ -13,8 +13,8 @@
 
   @media (max-width: 600px) {
     flex-direction: row;
-    height: 10vh;
-    min-height: 10vh;
+    height: 10dvh;
+    min-height: 10dvh;
     width: 100vw;
     align-items: center;
     border-right: none;
@@ -120,7 +120,7 @@
     z-index: 100;
     display: flex;
     width: 100vw;
-    height: 90vh;
+    height: 90dvh;
     left: 0;
     box-shadow: none;
     border-radius: 0;
@@ -135,7 +135,7 @@
   width: 350px;
   left: -350px;
   transition: left 0.8s ease;
-  height: 100vh;
+  height: 100dvh;
   border-bottom-right-radius: 20px;
   border-top-right-radius: 20px;
   z-index: 1;
@@ -172,6 +172,9 @@
         color: #333333;
         background-color: rgb(242, 240, 240);
 
+        @media (max-width: 600px) {
+          font-size: 16px;
+        }
         &:focus {
           border-color: #007bff;
         }
@@ -250,7 +253,7 @@
   right: 0;
   display: block;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   position: absolute;
   background-color: transparent;
   @media (max-width: 600px) {

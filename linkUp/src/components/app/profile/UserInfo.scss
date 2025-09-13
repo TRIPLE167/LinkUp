@@ -1,13 +1,12 @@
 .user-info-container {
-  height: 75%;
   .user-info {
     width: 100%;
-    height: 100%;
+    height: 240px;
 
-    display: flex;
+    display: flex;  
     gap: 30px;
     padding: 30px 30px;
-
+    
     @media (max-width: 1000px) {
       padding-inline: 20px;
     }
@@ -16,6 +15,7 @@
       column-gap: 20px;
     }
     @media (max-width: 600px) {
+      height: auto;
       flex-direction: column;
     }
     .details {
@@ -112,11 +112,12 @@
     flex-direction: column;
     width: 100%;
     padding-inline: 20px;
-    height: 100%;
+    
+    height: 240px;
     overflow-y: auto;
 
     @media (max-width: 600px) {
-      height: 106%;
+      height: 300px;
     }
     @media (max-width: 400px) {
       padding-inline: 10px;
@@ -164,7 +165,7 @@
           width: 70px;
           font-size: 12px;
         }
- 
+
         &:hover {
           background-color: #e8e8ee;
         }
@@ -182,7 +183,7 @@
           width: 70px;
           font-size: 12px;
         }
- 
+
         &:hover {
           background-color: #0568c0;
         }

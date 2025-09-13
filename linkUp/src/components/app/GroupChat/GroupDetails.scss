@@ -3,7 +3,7 @@
   min-width: 274px;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100dvh;
   border-left: 1px solid #ddd;
 
   @media (max-width: 970px) {
@@ -195,6 +195,10 @@
       padding-left: 10px;
       outline: none;
       margin-top: 20px;
+
+      @media (max-width: 600px) {
+        font-size: 16px;
+      }
     }
     h6 {
       color: red;
@@ -230,7 +234,7 @@
   top: 0;
   z-index: 1500;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   background-color: black;
   opacity: 40%;
 }

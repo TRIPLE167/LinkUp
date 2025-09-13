@@ -105,49 +105,49 @@ const UserSearchPanel = ({ isOpen, setIsOpen, currentUserId }) => {
             }
           }}
         >
-          {results.length > 0
-            ? results.map((user) => {
-                const showOnlineStatus = user.mutual && onlineUsers?.[user._id];
+          {results.length > 0 ? (
+            results.map((user) => {
+              const showOnlineStatus = user.mutual && onlineUsers?.[user._id];
 
-                return (
-                  <div
-                    key={user._id}
-                    className="user-result"
-                    onClick={() => {
-                      navigate(`/profile/${user.userName}`);
-                      setIsOpen(false);
-                    }}
-                  >
-                    <div className="avatar-wrapper">
-                      <img src={user.avatar || "/Bg.png"} alt={user.userName} />
-                      {user.mutual && (
-                        <span
-                          className={showOnlineStatus ? "online-dot" : ""}
-                        ></span>
-                      )}
-                    </div>
-                    <div>
-                      <h4>{user.displayName}</h4>
-                      <div className="name-lastname">
-                        <p>{user.name}</p>
-                        <p>{user.lastName}</p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            : searchTerm.trim() !== "" && (
+              return (
                 <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100%",
+                  key={user._id}
+                  className="user-result"
+                  onClick={() => {
+                    navigate(`/profile/${user.userName}`);
+                    setIsOpen(false);
                   }}
                 >
-                  <p>No users found.</p>
+                  <div className="avatar-wrapper">
+                    <img src={user.avatar || "/Bg.png"} alt={user.userName} />
+                    {user.mutual && (
+                      <span
+                        className={showOnlineStatus ? "online-dot" : ""}
+                      ></span>
+                    )}
+                  </div>
+                  <div>
+                    <h4>{user.displayName}</h4>
+                    <div className="name-lastname">
+                      <p>{user.name}</p>
+                      <p>{user.lastName}</p>
+                    </div>
+                  </div>
                 </div>
-              )}
+              );
+            })
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+              }}
+            >
+              <p>No users found.</p>
+            </div>
+          )}
         </div>
       </div>
       <div

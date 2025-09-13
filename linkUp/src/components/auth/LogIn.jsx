@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../../styles/Login.scss";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const LogIn = () => {
   const navigate = useNavigate();
-
+  const passwordRef = useRef();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -235,10 +235,23 @@ const LogIn = () => {
                   value={password}
                   onChange={handleInputChange("password", setPassword)}
                   autoComplete="current-password"
+                  ref={passwordRef}
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword((prev) => !prev)}
+                  onClick={() => {
+                    setShowPassword((prev) => !prev);
+
+                    setTimeout(() => {
+                      const input = passwordRef.current;
+                      if (input) {
+                        input.focus();
+
+                        const length = input.value.length;
+                        input.setSelectionRange(length, length);
+                      }
+                    }, 0);
+                  }}
                   className="show-password-btn"
                 >
                   <img src="/images/eye.png" alt="Toggle visibility" />

@@ -3,7 +3,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100dvh;
 
   .banner {
     width: 120px;
@@ -31,8 +31,6 @@
       align-items: center;
       margin-bottom: 45px;
     }
-
- 
 
     .avatar-picker {
       display: flex;
@@ -154,8 +152,8 @@
             background-color: #0568c0;
           }
           &:disabled {
-            background-color: #0575e6; 
-            opacity: 0.6; 
+            background-color: #0575e6;
+            opacity: 0.6;
             cursor: default;
           }
         }

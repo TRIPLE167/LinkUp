@@ -1,6 +1,6 @@
 .settings-container {
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   display: flex;
 
   @media (max-width: 600px) {
@@ -8,7 +8,7 @@
   }
   .settings-page {
     width: 94vw;
-    height: 100vh;
+    height: 100dvh;
     background-color: #fafafa;
     display: flex;
     flex-direction: column;

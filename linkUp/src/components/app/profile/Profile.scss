@@ -1,6 +1,6 @@
 .profile-container {
   display: flex;
-  height: 100vh;
+  height: 100dvh;
 
   @media (max-width: 600px) {
     flex-direction: column-reverse;
@@ -223,7 +223,6 @@
       border-radius: 30px;
       background-color: white;
       border: 1px solid #e5e7eb;
-      height: 320px;
 
       @media (max-width: 1000px) {
         min-width: 600px;
@@ -233,12 +232,10 @@
         min-width: 500px;
       }
       @media (max-width: 600px) {
-        min-width: 400px;
-        height: 640px;
+        min-width: 450px;
       }
       @media (max-width: 500px) {
         min-width: 350px;
-        height: 640px;
       }
       @media (max-width: 400px) {
         min-width: 300px;
@@ -328,7 +325,7 @@
   top: 0;
   opacity: 40%;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   position: absolute;
   background-color: black;
   z-index: 500;
