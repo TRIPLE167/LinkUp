@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useChat } from "../../../context/ChatContext";
@@ -21,6 +21,8 @@ export default function ChatPanel({}) {
   } = useChat();
 
   const currentUserId = localStorage.getItem("currentUserId");
+  const [inputFocused, setInputFocused] = useState(false);
+  const messageInputRef = useRef();
   const [groupDetails, setGroupDetails] = useState(false);
   const [localChat, setLocalChat] = useState(chat);
   const [localMessages, setLocalMessages] = useState(messages);
@@ -32,7 +34,6 @@ export default function ChatPanel({}) {
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const chatIdFromUrl = pathSegments[pathSegments.length - 1];
-  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
   useEffect(() => {
     setLocalChat(chat);
@@ -46,12 +47,26 @@ export default function ChatPanel({}) {
   useEffect(() => {
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth < 970);
-      setWindowHeight(window.innerHeight);
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    const input = messageInputRef.current;
+    if (!input) return;
+
+    const handleFocus = () => setInputFocused(true);
+    const handleBlur = () => setInputFocused(false);
+
+    input.addEventListener("focus", handleFocus);
+    input.addEventListener("blur", handleBlur);
+
+    return () => {
+      input.removeEventListener("focus", handleFocus);
+      input.removeEventListener("blur", handleBlur);
+    };
+  }, []);
   useEffect(() => {
     if (!chat && chatIdFromUrl && chatIdFromUrl !== "home") {
       setIsLoading(true);
@@ -153,7 +168,10 @@ export default function ChatPanel({}) {
   return (
     <div
       className="chat-panel"
-      style={window.innerWidth <= 600 ? { height: windowHeight } : {}}
+      style={{
+        height:
+          inputFocused && window.innerWidth <= 600 ? window.innerHeight : {},
+      }}
     >
       <div
         className="chat"
@@ -174,6 +192,7 @@ export default function ChatPanel({}) {
           typingUsers={typingUsers}
         />
         <MessageInput
+          ref={messageInputRef}
           onSend={handleSendMessage}
           socket={socket}
           chat={localChat}

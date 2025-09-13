@@ -1,7 +1,7 @@
 import Sidebar from "../SideBar";
 import "./Settings.scss";
 import { useState, useEffect, useRef } from "react";
-import { replace, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AvatarCrop from "../AvatarCrop/AvatarCrop";
 import { getCroppedImg } from "../AvatarCrop/getCroppedImg";
@@ -18,7 +18,8 @@ function fileToDataUrl(file) {
 
 const Settings = () => {
   const navigate = useNavigate();
-
+  const usernameInputRef = useRef(null);
+  const [inputFocused, setInputFocused] = useState(false);
   const { currentUser, setCurrentUser } = useChat();
   const [CROP_SIZE, setCROP_SIZE] = useState(250);
   const [userName, setUserName] = useState("");
@@ -34,13 +35,28 @@ const Settings = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [croppedBlob, setCroppedBlob] = useState(null);
   const fileInputRef = useRef(null);
-  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
   const handleLogOut = () => {
     localStorage.removeItem("currentUserId");
     localStorage.removeItem("email");
     navigate("/"), { replace: true };
   };
+
+  useEffect(() => {
+    const input = usernameInputRef.current;
+    if (!input) return;
+
+    const handleFocus = () => setInputFocused(true);
+    const handleBlur = () => setInputFocused(false);
+
+    input.addEventListener("focus", handleFocus);
+    input.addEventListener("blur", handleBlur);
+
+    return () => {
+      input.removeEventListener("focus", handleFocus);
+      input.removeEventListener("blur", handleBlur);
+    };
+  }, []);
 
   const validateUsername = () => {
     const trimmed = userName.trim();
@@ -59,14 +75,6 @@ const Settings = () => {
     setErrorMessage("");
     return true;
   };
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowHeight(window.innerHeight);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const handleUsernameSubmit = async (e) => {
     e.preventDefault();
@@ -173,10 +181,7 @@ const Settings = () => {
   };
 
   return (
-    <div
-      className="settings-container"
-      style={window.innerWidth <= 600 ? { height: windowHeight } : {}}
-    >
+    <div className="settings-container">
       <Sidebar />
       <div className="settings-page">
         <h5>Settings</h5>
@@ -258,6 +263,7 @@ const Settings = () => {
                 placeholder="Choose New UserName"
                 onChange={(e) => setUserName(e.target.value.trimStart())}
                 value={userName}
+                ref={usernameInputRef}
               />
               <p
                 className={

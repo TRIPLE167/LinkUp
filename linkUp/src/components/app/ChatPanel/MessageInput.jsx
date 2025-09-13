@@ -2,14 +2,19 @@
 import { useState, useEffect, useRef } from "react";
 import "./ChatPanel.scss";
 import { useChat } from "../../../context/ChatContext";
-export default function MessageInput({ onSend, socket, chat, currentUser }) {
+export default function MessageInput({
+  onSend,
+  socket,
+  chat,
+  currentUser,
+  ref: inputRef,
+}) {
   const [message, setMessage] = useState("");
   const [buttonClass, setButtonClass] = useState("");
   const { canSendMessage, textAreaPlaceHolder } = useChat();
   const typingTimer = useRef(null);
   const isTypingRef = useRef(false);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 680);
-  const inputRef = useRef(null);
 
   useEffect(() => {
     if (message != "") {
@@ -23,7 +28,6 @@ export default function MessageInput({ onSend, socket, chat, currentUser }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
- 
   const handleTyping = () => {
     if (!isTypingRef.current) {
       socket.emit("typing", {
@@ -54,9 +58,9 @@ export default function MessageInput({ onSend, socket, chat, currentUser }) {
       setMessage("");
 
       if (inputRef.current) {
-        inputRef.current.style.height = "auto";  
+        inputRef.current.style.height = "auto";
       }
- 
+
       if (isTypingRef.current) {
         clearTimeout(typingTimer.current);
         socket.emit("stopTyping", {
@@ -87,8 +91,8 @@ export default function MessageInput({ onSend, socket, chat, currentUser }) {
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault(); 
-            handleSubmit(e); 
+            e.preventDefault();
+            handleSubmit(e);
           }
         }}
         rows={1}
