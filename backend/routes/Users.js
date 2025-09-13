@@ -5,7 +5,6 @@ const Follow = require("../models/Follow");
 const Notification = require("../models/Notification");
 const mongoose = require("mongoose");
 
- 
 module.exports = (io, usersToSockets) => {
   router.get("/search", async (req, res) => {
     const { query, userId, skip = 0, limit = 10 } = req.query;
@@ -21,7 +20,6 @@ module.exports = (io, usersToSockets) => {
     try {
       const regex = new RegExp(query.trim(), "i");
 
-    
       const allUsers = await User.find({
         $or: [{ name: regex }, { lastName: regex }, { userName: regex }],
       })
@@ -31,13 +29,11 @@ module.exports = (io, usersToSockets) => {
         .skip(parseInt(skip))
         .limit(parseInt(limit));
 
- 
       const followingDocs = await Follow.find({ followerId: userId }).select(
         "followingId"
       );
       const followingIds = followingDocs.map((f) => f.followingId.toString());
 
- 
       const currentUserProfile = [];
       const followedUsers = [];
       const otherUsers = [];
@@ -46,7 +42,6 @@ module.exports = (io, usersToSockets) => {
         const uid = user._id.toString();
 
         if (uid === userId) {
-       
           currentUserProfile.push(user);
         } else if (followingIds.includes(uid)) {
           followedUsers.push(user);
@@ -55,7 +50,6 @@ module.exports = (io, usersToSockets) => {
         }
       });
 
- 
       const sortedUsers = [
         ...currentUserProfile,
         ...followedUsers,
@@ -65,6 +59,50 @@ module.exports = (io, usersToSockets) => {
       res.json(sortedUsers);
     } catch (error) {
       console.error("User search error:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  router.get("/profile-info", async (req, res) => {
+    const { query, userId } = req.query;
+
+    if (!query || query.trim() === "") {
+      return res.status(400).json({ message: "Query is required" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid userId" });
+    }
+
+    try {
+      // Exact match by username
+      const profileUser = await User.findOne({ userName: query.trim() }).select(
+        "userName displayName avatar name lastName followersCount followingCount createdAt"
+      );
+
+      if (!profileUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Get following list of current user
+      const followingDocs = await Follow.find({ followerId: userId }).select(
+        "followingId"
+      );
+      const followingIds = followingDocs.map((f) => f.followingId.toString());
+
+      let relation = "other";
+      if (profileUser._id.toString() === userId) {
+        relation = "self";
+      } else if (followingIds.includes(profileUser._id.toString())) {
+        relation = "following";
+      }
+
+      // Check online status
+      const isOnline = usersToSockets.has(profileUser._id.toString());
+
+      res.json({ ...profileUser.toObject(), relation, isOnline });
+    } catch (error) {
+      console.error("Profile info error:", error);
       res.status(500).json({ message: "Server error" });
     }
   });
@@ -79,7 +117,6 @@ module.exports = (io, usersToSockets) => {
 
       const objectId = new mongoose.Types.ObjectId(userId);
 
- 
       const user = await User.findOne({ _id: objectId }).select(
         "userName displayName avatar name lastName email followersCount followingCount createdAt"
       );
@@ -88,12 +125,10 @@ module.exports = (io, usersToSockets) => {
         return res.status(404).json({ message: "User not found" });
       }
 
- 
       const notifications = await Notification.find({ userId: objectId })
-        .sort({ createdAt: -1 })  
-        .lean(); 
+        .sort({ createdAt: -1 })
+        .lean();
 
- 
       res.json({ user, notifications });
     } catch (error) {
       console.error("User info error:", error);
@@ -122,18 +157,16 @@ module.exports = (io, usersToSockets) => {
         return res.status(400).json({ message: "You cannot follow yourself" });
       }
 
- 
       const newFollow = new Follow({ followerId, followingId });
 
       try {
         await newFollow.save();
- 
+
         await Promise.all([
           User.findByIdAndUpdate(followerId, { $inc: { followingCount: 1 } }),
           User.findByIdAndUpdate(followingId, { $inc: { followersCount: 1 } }),
         ]);
 
- 
         const followerUser = await User.findById(followerId).select(
           "name lastName userName displayName avatar"
         );
@@ -151,18 +184,16 @@ module.exports = (io, usersToSockets) => {
             },
           };
 
- 
           await Notification.findOneAndUpdate(
             {
               userId: followingId,
               type: "follow",
-              "content._id": followerUser._id, 
+              "content._id": followerUser._id,
             },
             { $set: notificationData },
-            { upsert: true, new: true } 
+            { upsert: true, new: true }
           );
 
-  
           const recipientSocketId = usersToSockets.get(followingId);
           if (recipientSocketId) {
             io.to(recipientSocketId).emit(
@@ -188,7 +219,6 @@ module.exports = (io, usersToSockets) => {
         return res.status(201).json({ success: true, follow: newFollow });
       } catch (saveError) {
         if (saveError.code === 11000) {
- 
           return res
             .status(200)
             .json({ success: true, message: "Already following" });
@@ -224,7 +254,6 @@ module.exports = (io, usersToSockets) => {
           .json({ message: "You cannot unfollow yourself" });
       }
 
- 
       const deleted = await Follow.findOneAndDelete({
         followerId,
         followingId,
@@ -236,26 +265,20 @@ module.exports = (io, usersToSockets) => {
           .json({ message: "Follow relationship not found" });
       }
 
- 
       await Promise.all([
         User.findByIdAndUpdate(followerId, { $inc: { followingCount: -1 } }),
         User.findByIdAndUpdate(followingId, { $inc: { followersCount: -1 } }),
       ]);
 
- 
- 
       const followerSocketId = usersToSockets.get(followerId);
       const followingSocketId = usersToSockets.get(followingId);
 
- 
       const payload = { followerId, followingId };
 
- 
       if (followingSocketId) {
         io.to(followingSocketId).emit("userUnfollowed", payload);
       }
 
- 
       if (followerSocketId) {
         io.to(followerSocketId).emit("userUnfollowed", payload);
       }
@@ -284,8 +307,8 @@ module.exports = (io, usersToSockets) => {
     try {
       const followers = await Follow.find({ followingId: userId })
         .populate("followerId", "userName displayName avatar name lastName")
-        .skip(parseInt(skip))  
-        .limit(parseInt(limit));  
+        .skip(parseInt(skip))
+        .limit(parseInt(limit));
 
       const followerUsers = followers.map((f) => f.followerId.toObject());
 
@@ -306,7 +329,6 @@ module.exports = (io, usersToSockets) => {
     }
   });
 
- 
   router.get("/following", async (req, res) => {
     const { userId, currentUserId, skip = 0, limit = 6 } = req.query;
 
@@ -324,8 +346,8 @@ module.exports = (io, usersToSockets) => {
     try {
       const following = await Follow.find({ followerId: userId })
         .populate("followingId", "userName displayName avatar name lastName")
-        .skip(parseInt(skip))  
-        .limit(parseInt(limit));  
+        .skip(parseInt(skip))
+        .limit(parseInt(limit));
 
       const followingUsers = following.map((f) => f.followingId.toObject());
 
@@ -346,7 +368,6 @@ module.exports = (io, usersToSockets) => {
     }
   });
 
- 
   router.get("/follow-status", async (req, res) => {
     try {
       const { followerId, followingId } = req.query;
@@ -370,8 +391,8 @@ module.exports = (io, usersToSockets) => {
       ]);
 
       return res.json({
-        following: Boolean(aFollowsB),  
-        followedBy: Boolean(bFollowsA),  
+        following: Boolean(aFollowsB),
+        followedBy: Boolean(bFollowsA),
         mutual: Boolean(aFollowsB && bFollowsA),
       });
     } catch (error) {
@@ -388,21 +409,18 @@ module.exports = (io, usersToSockets) => {
         return res.status(400).json({ message: "userId is required" });
       }
 
-   
       const following = await Follow.find({ followerId: userId }).select(
         "followingId"
       );
       const followingIds = following.map((f) => f.followingId.toString());
 
- 
       const followers = await Follow.find({ followingId: userId }).select(
         "followerId"
       );
       const followerIds = followers.map((f) => f.followerId.toString());
 
-      
       const mutualIds = followingIds.filter((id) => followerIds.includes(id));
- 
+
       const mutualUsers = await User.find({ _id: { $in: mutualIds } }).select(
         "userName displayName name lastName avatar"
       );
@@ -414,7 +432,6 @@ module.exports = (io, usersToSockets) => {
     }
   });
 
- 
   router.post("/notifications/mark-read-all", async (req, res) => {
     try {
       const userId = req.query.userId;
@@ -424,7 +441,7 @@ module.exports = (io, usersToSockets) => {
       }
 
       await Notification.updateMany(
-        { userId, read: false },  
+        { userId, read: false },
         { $set: { read: true } }
       );
 
@@ -435,5 +452,5 @@ module.exports = (io, usersToSockets) => {
     }
   });
 
-  return router; 
+  return router;
 };
