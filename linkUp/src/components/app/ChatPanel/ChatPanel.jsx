@@ -32,6 +32,7 @@ export default function ChatPanel({}) {
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const chatIdFromUrl = pathSegments[pathSegments.length - 1];
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
   useEffect(() => {
     setLocalChat(chat);
@@ -43,7 +44,10 @@ export default function ChatPanel({}) {
   }, [chat]);
 
   useEffect(() => {
-    const handleResize = () => setIsSmallScreen(window.innerWidth < 970);
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 970);
+      setWindowHeight(window.innerHeight);
+    };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -147,7 +151,10 @@ export default function ChatPanel({}) {
   };
 
   return (
-    <div className="chat-panel">
+    <div
+      className="chat-panel"
+      style={window.innerWidth <= 600 ? { height: windowHeight } : {}}
+    >
       <div
         className="chat"
         style={{ opacity: isSmallScreen && groupDetails ? 0 : 1 }}

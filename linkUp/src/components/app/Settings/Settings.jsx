@@ -34,6 +34,7 @@ const Settings = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [croppedBlob, setCroppedBlob] = useState(null);
   const fileInputRef = useRef(null);
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
   const handleLogOut = () => {
     localStorage.removeItem("currentUserId");
@@ -58,6 +59,14 @@ const Settings = () => {
     setErrorMessage("");
     return true;
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowHeight(window.innerHeight);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleUsernameSubmit = async (e) => {
     e.preventDefault();
@@ -164,7 +173,10 @@ const Settings = () => {
   };
 
   return (
-    <div className="settings-container">
+    <div
+      className="settings-container"
+      style={window.innerWidth <= 600 ? { height: windowHeight } : {}}
+    >
       <Sidebar />
       <div className="settings-page">
         <h5>Settings</h5>
