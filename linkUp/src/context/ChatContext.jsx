@@ -286,10 +286,12 @@ export function ChatProvider({ children }) {
         });
       } else {
         try {
-          setNewMessagesCount((prev) => ({
-            ...prev,
-            [newMessage.chatId]: (prev[newMessage.chatId] || 0) + 1,
-          }));
+          if (selectedChatRef.current?._id !== newMessage.chatId) {
+            setNewMessagesCount((prev) => ({
+              ...prev,
+              [newMessage.chatId]: (prev[newMessage.chatId] || 0) + 1,
+            }));
+          }
 
           const res = await axios.get(
             `${import.meta.env.VITE_API_URL}/chats/${newMessage.chatId}`
